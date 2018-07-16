@@ -1,7 +1,7 @@
 package com.ckw.rxjavalearning.process;
 
 
-import io.reactivex.Observer;
+import io.reactivex.Scheduler;
 
 /**
  * Created by ckw
@@ -20,4 +20,12 @@ public abstract class Top implements TopSource{
     }
 
     protected abstract void subscribeActual(Bottom bottom);
+
+    public final Top subscribeOn(Scheduler scheduler){
+        return new TopBottomOn(scheduler,this);
+    }
+
+    public final Top observeOn(Scheduler scheduler){
+        return new ObservableObserveOn(scheduler,this);
+    }
 }

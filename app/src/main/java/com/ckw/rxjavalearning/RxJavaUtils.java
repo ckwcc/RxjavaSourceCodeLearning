@@ -1,10 +1,15 @@
 package com.ckw.rxjavalearning;
 
+import android.util.Log;
+
+import io.reactivex.Flowable;
 import io.reactivex.Observable;
 import io.reactivex.ObservableEmitter;
 import io.reactivex.ObservableOnSubscribe;
 import io.reactivex.Observer;
+import io.reactivex.android.schedulers.AndroidSchedulers;
 import io.reactivex.disposables.Disposable;
+import io.reactivex.schedulers.Schedulers;
 
 /**
  * Created by ckw
@@ -14,6 +19,7 @@ public class RxJavaUtils {
 
     public static void createOperator(){
         /*
+        * 数据传输(不包括线程的切换)：
         * create方法需要有一个ObservableOnSubscribe对象作为source，在create方法中，通过new ObservableCreate<T>(source)
         * 创造一个observable对象（ObservableCreate对象继承自Observable）
         * 最后调用RxJavaPlugins.onAssembly(new ObservableCreate<T>(source));
@@ -41,12 +47,22 @@ public class RxJavaUtils {
         * */
 
 
+        /*
+        * 线程切换：
+        *  observeOn -> new ObservableSubscribeOn中的SubscribeOnObserver
+        *
+        * */
+
+
         Observable.create(new ObservableOnSubscribe<String>() {
             @Override
             public void subscribe(ObservableEmitter<String> emitter) throws Exception {
                 emitter.onNext("test");
             }
-        }).subscribe(new Observer<String>() {
+        })
+        .subscribeOn(Schedulers.io())
+        .observeOn(AndroidSchedulers.mainThread())
+        .subscribe(new Observer<String>() {
             @Override
             public void onSubscribe(Disposable d) {
 
